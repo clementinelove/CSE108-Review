@@ -10,29 +10,29 @@
 
 ### States 进程的状态
 
-As a process executes, it changes state. The state of a process is deﬁned in part by the current activity of that process. A process may be in one of the following states:
+> As a process executes, it changes state. The state of a process is deﬁned in part by the current activity of that process. A process may be in one of the following states:
 
 进程执行时，它的状态（state）是不断变化的。可以说，进程的状态一定上是因进程当前的活动（current activity）所决定的。进程可以处于以下的任意一种状态。
 
 ![process-states](./process-states.jpeg)
 
-- New. The process is being created.
+- > New. The process is being created.
 
   初始态。进程一创建完，他就进入了初始态。此时操作系统会进行许可控制（admission control）。如果系统认为该进程没问题，便允许进程（admit）创建，操作系统会为该进程分配并初始化一个进程控制区块（process control block，见下）以及一些初始资源。
 
-- Ready. The process is waiting to be assigned to a processor.
+- > Ready. The process is waiting to be assigned to a processor.
 
   就绪态，进程正等待被分配给某一个处理器的状态。当进程已经获许（admitted），得到了初始资源以后，程序就处于就绪态，等待调度器对它进行分配送入CPU
 
-- Running. Instructions are being executed.
+- > Running. Instructions are being executed.
 
   运行态，不断执行程序指令（instructions）的状态。此时，进程可能被中断（interrupted），发生上下文交换（context switching）；也可能进入等待态。
 
-- Waiting. The process is waiting for some event to occur (such as an I/O completion or reception of a signal).
+- > Waiting. The process is waiting for some event to occur (such as an I/O completion or reception of a signal).
 
   等待态，进程在等待某一事件发生（如等待I/O端完成工作或接受一个信号）
 
-- Terminated. The process has ﬁnished execution.
+- > Terminated. The process has ﬁnished execution.
 
   终止态，进程完成执行了。注意，程序出错了也可能导致程序进入终止态。
 
@@ -58,7 +58,7 @@ Process Control Block (PCB): contains information associated with each process: 
 
 ## 线程
 
-Threads are fundamental unit of CPU utilization that forms the basis of multi-threaded computer systems. It comprises  a thread ID, a pc, a register set and a stack. 
+> Threads are fundamental unit of CPU utilization that forms the basis of multi-threaded computer systems. It comprises  a thread ID, a pc, a register set and a stack. 
 
 线程是多线程计算机系统中CPU使用的基本单位。单个线程由一个线程ID，一个程序计数器，一个寄存器组和一个栈构成。
 
@@ -92,7 +92,7 @@ If a process has multiple threads of control, it can perform more than one task 
 
 #### Many to One Model 多对一
 
-The many-to-one model (Figure 4.5) maps many user-level threads to one kernel thread. Thread management is done by the thread library in user space, so it is efficient (we discuss thread libraries in Section 4.4). However, the entire process will block if a thread makes a blocking system call. Also, because only one thread can access the kernel at a time,multiple threads are unable to run in parallel on multicore systems.
+> The many-to-one model (Figure 4.5) maps many user-level threads to one kernel thread. Thread management is done by the thread library in user space, so it is efficient (we discuss thread libraries in Section 4.4). However, the entire process will block if a thread makes a blocking system call. Also, because only one thread can access the kernel at a time,multiple threads are unable to run in parallel on multicore systems.
 
 许多用户线程映射到同一内核线程。线程的管理是通过线程库（thread library，它是一个提供给用户创建及管理线程的应用程序接口／API的库，它能帮助管理线程）在用户空间（user space）中进行的，因此效率比较高（线程不受内核的过多约束，比如，不需要要求内核线程进行调度），但如果有一个线程发起了一个阻塞性系统调用（blocking system call，即能导致系统陷入某种阻塞／等待状态的系统调用，比如请求用户输入数据），整个进程都会陷入停滞状态（如果用户不输入数据，就没有任何返回值，发起的这个系统调用如果不能得到返回值，该程序就会一直停留在内核模式，从而阻塞了整个程序的运行）。同时，由于一次只能有一个用户线程访问内核线程，多线程不能在多核系统上平行运行（平行运行就是同时运行，多核就是一个芯片集成多个CPU处理器，多核系统中的每个核都能运行一个线程）。
 
@@ -108,7 +108,7 @@ The many-to-one model (Figure 4.5) maps many user-level threads to one kernel th
 
 #### One-to-One Model 一对一模型
 
-The one-to-one model (Figure 4.6) maps each user thread to a kernel thread. It provides more concurrency than the many-to-one model by allowing another thread to run when a thread makes a blocking system call. It also allows multiple threads to run in parallel on multiprocessors. The only drawback to this model is that creating a user thread requires creating the corresponding kernel thread. Because the overhead of creating kernel threads can burden the performance of an application, most implementations of this model restrict the number of threads supported by the system.
+> The one-to-one model (Figure 4.6) maps each user thread to a kernel thread. It provides more concurrency than the many-to-one model by allowing another thread to run when a thread makes a blocking system call. It also allows multiple threads to run in parallel on multiprocessors. The only drawback to this model is that creating a user thread requires creating the corresponding kernel thread. Because the overhead of creating kernel threads can burden the performance of an application, most implementations of this model restrict the number of threads supported by the system.
 
 一对一模型中，每个用户线程都映射到一个不同的内核线程。该模型在一个线程执行阻塞性系统调用时，能让另一个线程继续执行，因此提供了更好的并发性（concurrency，同时发生之意）。这种模型的唯一缺点在于每创建一个用户线程就得创建一个相应的内核线程，这样的开销（overhead）影响了应用程序的性能。所以这种模型的多数实现都限制了用户能创建的线程的数量。
 
@@ -116,9 +116,9 @@ The one-to-one model (Figure 4.6) maps each user thread to a kernel thread. It p
 
 #### Many-to-Many Model 多对多模型
 
-The many-to-many model (Figure 4.7) multiplexes many user-level threads to a smaller or equal number of kernel threads. The number of kernel threads may be specific to either a particular application or a particular machine (an application may be allocated more kernel threads on a multiprocessor than on a single processor).
+> The many-to-many model (Figure 4.7) multiplexes many user-level threads to a smaller or equal number of kernel threads. The number of kernel threads may be specific to either a particular application or a particular machine (an application may be allocated more kernel threads on a multiprocessor than on a single processor).
 
-Let’s consider the effect of this design on concurrency. Whereas the many-to- one model allows the developer to create as many user threads as she wishes, it does not result in true concurrency, because the kernel can schedule only one thread at a time. The one-to-one model allows greater concurrency, but the developer has to be careful not to create too many threads within an application (and in some instances may be limited in the number of threads she can create). The many-to-many model suffers from neither of these shortcomings: developers can create as many user threads as necessary, and the corresponding kernel threads can run in parallel on a multiprocessor. Also, when a thread performs a blocking system call, the kernel can schedule another thread for execution.
+> Let’s consider the effect of this design on concurrency. Whereas the many-to- one model allows the developer to create as many user threads as she wishes, it does not result in true concurrency, because the kernel can schedule only one thread at a time. The one-to-one model allows greater concurrency, but the developer has to be careful not to create too many threads within an application (and in some instances may be limited in the number of threads she can create). The many-to-many model suffers from neither of these shortcomings: developers can create as many user threads as necessary, and the corresponding kernel threads can run in parallel on a multiprocessor. Also, when a thread performs a blocking system call, the kernel can schedule another thread for execution.
 
 ![many-to-many](/Users/Clement/Dropbox/Courses/Year 2/Semester 2/CSE108/Notes/many-to-many.png)
 
@@ -172,9 +172,9 @@ lock(mutex) { // lock the mutex
 
 #### Monitor 管程
 
-Monitor is a high-level abstraction that provides a convenient and effective mechanism for process synchronizatifon.
+> Monitor is a high-level abstraction that provides a convenient and effective mechanism for process synchronizatifon.
 
-管程（monitoe）是一个能为**进程同步**提供一个方便而有效的机制的高度抽象结构。mutex和condition variable其实两个数据结构，被称作同步设施（synchronization constructs）。想象一下，如果你在一个程序大量的使用mutex和condition variable，那么在自己编码的情况下是很容易出错的（需要大量的手动上锁和解锁代码）。monitor大大降低了程序员的编程负担，它通过将mutex和condition variable高度抽象化的方式，使得程序员不需要自己写上锁解锁的代码（即不需要显式地编写同步代码，同步代码就是用于同步的代码，比如`lock(mutex){…}`），直接使用monitor就能实现自动上锁和自动解锁的功能，如果还需要使用更复杂的同步机制，程序员还可以自己声明condition variable。
+管程（monitor）是一个能为**进程同步**提供一个方便而有效的机制的高度抽象结构。mutex和condition variable其实两个数据结构，被称作同步设施（synchronization constructs）。想象一下，如果你在一个程序大量的使用mutex和condition variable，那么在自己编码的情况下是很容易出错的（需要大量的手动上锁和解锁代码）。monitor大大降低了程序员的编程负担，它通过将mutex和condition variable高度抽象化的方式，使得程序员不需要自己写上锁解锁的代码（即不需要显式地编写同步代码，同步代码就是用于同步的代码，比如`lock(mutex){…}`），直接使用monitor就能实现自动上锁和自动解锁的功能，如果还需要使用更复杂的同步机制，程序员还可以自己声明condition variable。
 
 ```c
 monitor{
@@ -191,11 +191,15 @@ monitor{
 }
 ```
 
-使用monitor，只需要声明有哪些共享的资源（shared resources 或 shared variables）、有哪些会使用到这些资源的操作（被称作entry procedures，操作的本质是一个过程／函数，比如读取操作，写入操作）以及可能会用到的condition variables（以实现一些比较复杂的同步机制）。显式地在monitor内部声明这些必要的信息之后，monitoe就可以使用了。
+使用monitor，只需要声明有哪些共享的资源（shared resources 或 shared variables）、有哪些会使用到这些资源的操作（被称作entry procedures，操作的本质是一个过程／函数，比如读取操作，写入操作）以及可能会用到的condition variables（以实现一些比较复杂的同步机制）。显式地在monitor内部声明这些必要的信息之后，monitor就可以使用了。
+
+![monitor](./monitor.png)
+
+![monitor-chi](./monitor-chi.png)
 
 ### Deadlock 死锁
 
-Deadlock: Two or more processes are waiting indefinitely for an event that can be caused by only one of the waiting processes (most OSes do not prevent or deal with deadlocks) 
+> Deadlock: Two or more processes are waiting indefinitely for an event that can be caused by only one of the waiting processes (most OSes do not prevent or deal with deadlocks) 
 
 死锁是指两个或多个进程互相无限等待对方触发一个只有它们中的一员才能触发的某一个事件。
 
@@ -215,9 +219,9 @@ CPU在执行指令的时候常常要从内存中获取数据。但是直接从�
 
 ### Base and Limit Registers 基地址与界限地址寄存器
 
-Base and limit registers define logical address space usable by a process
+> Base and limit registers define logical address space usable by a process
 
-基地址寄存器（base register）与界限地址（limit register）寄存器规定了一个进程可以使用的地址（逻辑地址）空间。对于正在运行的进程，操作系统在这两个寄存器中分别存入基地址和区间长度以形成一个个区间，把各个不同的进程（用户进程）分隔开。进程可以使用这两个地址之间的空间作为这个应用可以使用的内存。如图下的300040到420940这一区段就是第二个进程可以使用的内存空间（注意，此处base register存储的是基地址（可以当做是这个进程使用的内存区间的上界），但是limit register存储的不是这一段进程的底地址（即不是下界的地址）而是跨越的内村地址的数量；以下图为例，要得到下界地址420940，需要将base register中的地址加上limit register中的大小，即300040+120900）：
+基地址寄存器（base register）与界限地址（limit register）寄存器规定了一个进程可以使用的地址（逻辑地址）空间。对于正在运行的进程，操作系统在这两个寄存器中分别存入基地址和区间长度以形成一个个区间，把各个不同的进程（用户进程）分隔开。进程可以使用这两个地址之间的空间作为这个应用可以使用的内存。如图下的300040到420940这一区段就是第二个进程可以使用的内存空间（注意，此处base register存储的是基地址（可以当做是这个进程使用的内存区间的上界），但是limit register存储的不是这一段进程的底地址（即不是下界的地址）而是跨越的内存地址的数量；以下图为例，要得到下界地址420940，需要将base register中的地址加上limit register中的大小，即300040+120900）：
 
 ![user-process-space](./user-process-space.png)
 
@@ -227,5 +231,73 @@ Base and limit registers define logical address space usable by a process
 
 CPU从用户处接收到用户程序想要访问的地址，然后先判断这一个地址是不是在基地址寄存器中存储的地址位置之后（比如程序要访问的地址是300050，base register中的地址是300040，则CPU会进入下一步判断），再判断这个地址是不是在“base register 中的值”+“limit register中的值”得到的地址的值之前。只有在这个程序的进程所处的区间之内才能够继续访问内存，否则报错（trap）。
 
-### Logical and Physical Address 逻辑地址与物理地址
+### Swapping 交换机制
+
+运行中的程序并非总是完全将它自身存储在内存中：它有时会将自身的一部分先存储在二级存储中。这实际上是使用了一种叫**Swapping（交换）**的机制来运行程序。
+
+![Swapping](./Swapping.png)
+
+内存装着两个东西，一个是内核（也就是不断运行的操作系统程序），一个就是用户空间（用户空间中运行着各种程序）。程序可以完全都在用户空间中运行，比较大型的程序则可能会将自己的一部分先存储于二级存储空间（比如硬盘），另一部分存储在main memory中：等到要用到存储与二级存储空间上那部分内容的时候再把它从二级存储中与原先在DRAM（也即是main memory）上的那部分交换（swap in），如上图中的*P<sub>2<sub>*被转移到main memory中；原先的程序（比如上图中的*P<sub>1<sub>*）则由于*P<sub>2<sub>*要进入，要**先**（注意顺序）被存储到二级存储空间上以给*P<sub>2<sub>*腾出足够空间（swap out）。这种做法使得用户空间中的程序能使用的“内存空间”能够突破DRAM自身大小的限制，实现对main memory的扩展（实际即是借用二级存储设备作为主存的扩展）。不过这种做法由于可能要不断地在二级存储和内存之间进行信息交换，整个系统的性能表现（system performance）肯定会下降（decreases）。
+
+> Swap-space management is another low-level task of the operating system. Virtual memory uses disk space as an extension of main memory. Since disk access is much slower than memory access, using swap space significantly decreases system performance. The main goal for the design and implementation of swap space is to provide the best throughput for the virtual memory system. 
+
+### Logical and Physical Address 逻辑地址与物理地址 
+
+![virtual-memory](./virtual-memory.png)
+
+上述提到的交换机制（Swapping）其实是基于**virtual memory**（可译为“虚拟内存”）进行实现的。以上是一张virtual memory的示意图。实际上整个运行的程序就仿佛是在这么一个“virtual memory”中，它包括了程序存储在硬盘上的一部分，也包括已经加载到内存中的另一部分。程序在这个virtual memory中使用的是**virtual address**：“虚拟地址”。与其相对应的是main memory使用的**physical address**（物理地址）。Virtual address由CPU生成，通常情况下也被称作**logical address**。在CPU与内存之间，有一个硬件叫Memory Management Unit（**MMU**）可以将virtual memory使用的这些virtual address转换成可由physical memory（也就是DRAM）处理的physical address（main memory不能直接处理virtual address，只能处理physical address）。
+
+> Virtual memory – separation of user logical memory from physical memory
+
+> Logical address (virtual address) – an address generated by the CPU; Must be mapped to physical address before they are used.
+
+![MMU](./MMU.png)
+
+![mmu-book](./mmu-book.png)
+
+#### 两种地址间的转换
+
+前面提到，MMU可以实现从logical address到physical address的一个转换操作。那么这个操作具体是怎么实现的呢？主要有以下两种方式：Paging和Segmentation。
+
+##### Paging 分页法
+
+![paging](./paging.png)
+
+> Paging: divide memory into fixed-sized blocks (physical called frames; logical called pages)
+>
+> Paging's goal: eliminate fragmentation（碎片） due to large segments; physical address space of a process can be noncontiguous (不连续的)
+
+![virtual-memory-overview](./virtual-memory-overview.png)
+
+每一个正在运行的进程在使用paging机制。Paging机制将virtual memory和DRAM（也就是main memory）分别划分成了一块一块的形式。上图中的蓝色部分就是virtual memory，它被画风成一页页大小相同的**pages**，而DRAM则被划分成一页页大小相同的**page frame**。pages上的virtual address能通过page table找到其对应的physical address。也因此，page table的角色特别像是一张映射表，而每一个进程都有这么一张映射表，由操作系统负责管理。
+
+##### Segmentation 分割法 
+
+> Segmentation: a memory-management scheme that supports this programmer view of memory. Divide virtual address space into separate logical segments.
+
+Segmentation是另外一种将logical address和physical address直接进行转换的方法。这种方法使得virtual memory中的每一个单元可以**不按固定长度划分**，而是可以像程序员经常见到的内存的样子一样，分为stack，heap，data段，code段和一段自由空间。这提供给了程序员一个抽象的内存视图，方便了那些需要对内存进行编程（比如C、C++）的程序员（实际应用中，Segmentation是和Paging结合使用的，因此我们在学程序语言的时候也是通过segmentation提供的这种抽象视角认识和使用内存的各个部分，而不是pages）。
+
+![programmer-view](./programmer-view.png)
+
+![segmentation](./segmentation.png)
+
+### Thrashing 颠簸 
+
+![thrashing](./thrashing.png)
+
+> Thrashing:  a process is busy swapping pages in and out.
+
+在multiprogramming（多项规划）的系统下，CPU的利用率通常会逐渐升高，当CPU的利用率达到某个峰值的时候，系统就会发生“颠簸”，并且CPU利用率极具下滑。这种行为很容易发生在paging机制中：当进程不断地需要和二级存储上的page进行交换（swapping），CPU的利用率很容易升高，但最终会导致CPU利用率骤降。page-table和需要良好规划，才能减少此类事故的发生。
+
+Thrash的意思是“激烈地运动”，这正好对应着thrashing中进程不断交换pages的情形。
+
+### Disk attachment 
+
+
+
+### RAID
+
+RAID (redundant array of inexpensive disks) schemes improve performance and improve the reliability of the storage system by storing redundant data.
+
+由于现在硬盘比较便宜（此处是指机械式的），产生了一种将多个硬盘堆成一个个“阵列”的方法，称作RAID（廉价硬盘冗余阵列。。。）。RAID的本质就是通过数据冗余，比如将机器自带的硬盘进行多份拷贝，这样当其中的一个硬盘发生损坏的时候，其他的硬盘也不会有丝毫问题，就这样提高了整个体系的可靠性（reliability）。就是这样，真的就是这样。至于性能，倒真不见得能有多大提升。
 
