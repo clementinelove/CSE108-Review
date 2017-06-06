@@ -291,6 +291,10 @@ Segmentation是另外一种将logical address和physical address直接进行转�
 
 Thrash的意思是“激烈地运动”，这正好对应着thrashing中进程不断交换pages的情形。
 
+## Storage Management 存储管理
+
+
+
 ### Disk attachment 
 
 
@@ -300,4 +304,28 @@ Thrash的意思是“激烈地运动”，这正好对应着thrashing中进程�
 RAID (redundant array of inexpensive disks) schemes improve performance and improve the reliability of the storage system by storing redundant data.
 
 由于现在硬盘比较便宜（此处是指机械式的），产生了一种将多个硬盘堆成一个个“阵列”的方法，称作RAID（廉价硬盘冗余阵列。。。）。RAID的本质就是通过数据冗余，比如将机器自带的硬盘进行多份拷贝，这样当其中的一个硬盘发生损坏的时候，其他的硬盘也不会有丝毫问题，就这样提高了整个体系的可靠性（reliability）。就是这样，真的就是这样。至于性能，倒真不见得能有多大提升。
+
+## Protection and Security 保护与安全
+
+### CIA Triad
+
+保证计算机系统的安全是一件十分重要的事情。系统只有在用户能够依其意图使用及访问资源时才被认为是安全的（secure）。然而，系统的安全是没有办法完全保证的（即系统完全安全是unachievable的，即不能实现的）。不过，我们还是得建立起一个能使攻击行为（security breaches）极少发生的一个系统机制，使这些攻击发生的情况极少。
+在讨论安全时，我们要注意以下术语：
+
+- Intruder／Crackers：入侵者／破解者，即发起攻击（breach security）的人；
+- Threat：威胁，表示破坏安全的潜在危险（potential security violation）；
+- Attack：攻击，表示对破坏系统安全的尝试（the attempt to breach security）。
+
+![CIA-triad](./CIA-triad.png)
+
+以下介绍常见的三种安全攻击行为（PPT中涉及），信息安全中的CIA三要素（CIA Triad），也影射了这三种常见的攻击类型：
+- **Breach of confidentiality** （攻击保密性）：这种破坏涉及未授权（unauthorized）的读取数据（reading of data）的行为，即窃取机密信息，导致身份信息泄漏等等。
+- **Breach of integrity** （攻击完整性）：这种破坏涉及未授权的对数据的修改行为（modification of data）：这可能导致债务转给无辜的一方，或者重要的商业应用的源代码被修改的恶性事件发生。
+- **Breach of availability** （攻击可用性）：这种攻击涉及对数据进行未授权的破坏行为（destruction of data）。有的入侵者就是为了大肆破坏而不是为了获利，这种现象常发生于各路网站。
+
+### Principle of Least Privilege 最小权限原则
+
+为了保障整个系统的安全性，用户的权限总是最小。
+
+
 
