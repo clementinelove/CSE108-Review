@@ -114,7 +114,7 @@ If a process has multiple threads of control, it can perform more than one task 
 
 一对一模型中，每个用户线程都映射到一个不同的内核线程。该模型在一个线程执行阻塞性系统调用时，能让另一个线程继续执行，因此提供了更好的并发性（concurrency，同时发生之意）。这种模型的唯一缺点在于每创建一个用户线程就得创建一个相应的内核线程，这样的开销（overhead）影响了应用程序的性能。所以这种模型的多数实现都限制了用户能创建的线程的数量。
 
-![one-to-one](/Users/Clement/Dropbox/Courses/Year 2/Semester 2/CSE108/Notes/one-to-one.png)
+![one-to-one](./one-to-one.png)
 
 #### Many-to-Many Model 多对多模型
 
@@ -122,7 +122,7 @@ If a process has multiple threads of control, it can perform more than one task 
 
 > Let’s consider the effect of this design on concurrency. Whereas the many-to- one model allows the developer to create as many user threads as she wishes, it does not result in true concurrency, because the kernel can schedule only one thread at a time. The one-to-one model allows greater concurrency, but the developer has to be careful not to create too many threads within an application (and in some instances may be limited in the number of threads she can create). The many-to-many model suffers from neither of these shortcomings: developers can create as many user threads as necessary, and the corresponding kernel threads can run in parallel on a multiprocessor. Also, when a thread performs a blocking system call, the kernel can schedule another thread for execution.
 
-![many-to-many](/Users/Clement/Dropbox/Courses/Year 2/Semester 2/CSE108/Notes/many-to-many.png)
+![many-to-many](./many-to-many.png)
 
 多对多模型将多个用户级线程（user-level threads）映射到同等数量或更少的内核线程中。内核线程的数量可能与特定的应用程序或者特定的机器有关（比如，运行于多处理器的机器上的应用程序，相对于那些运行于在单处理器的机器上的应用程序来说，可以分配更多的内核线程），开发者可以应需创建任意多的用户线程，但是由于内核一次只能调度自身的一个线程，所以并没有增加并发行（请仔细观察模型的图片描述）。一对一模型相对提供了更高的并发性，但创建过多的线程会增大开销，但多对多没有这个问题。多对一模型会导n致阻塞性系统调用的问题，多对多模型也没有，它可以通过内核调度（schedule）另一个内核线程来继续执行程序实现避免阻塞。
 
